@@ -15,7 +15,8 @@ import {
   TrendingDown,
   Bot,
   Infinity,
-  Clock
+  Clock,
+  Quote
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -24,6 +25,7 @@ interface Product {
   name: string;
   price: string;
   oldPrice?: string;
+  paymentUrl: string;
   period: string;
   isPromo: boolean;
   features: string[];
@@ -33,11 +35,51 @@ interface Product {
   iconColorClass: string;
 }
 
+interface Testimonial {
+  name: string;
+  role: string;
+  content: string;
+  rating: number;
+  avatar: string;
+}
+
+const testimonials: Testimonial[] = [
+  {
+    name: "Ricardo Silva",
+    role: "Editor de Vídeos",
+    content: "O CapCut PRO mudou meu jogo. Pagar uma única vez por ano economizou quase 500 reais que eu gastaria na assinatura mensal oficial. Recomendo demais!",
+    rating: 5,
+    avatar: "RS"
+  },
+  {
+    name: "Mariana Costa",
+    role: "Designer Freelancer",
+    content: "O Canva Pro ativado no meu próprio e-mail foi a melhor coisa. Não perdi meus projetos e agora tenho todos os recursos premium liberados.",
+    rating: 5,
+    avatar: "MC"
+  },
+  {
+    name: "Felipe Almeida",
+    role: "Estudante e Criador de Conteúdo",
+    content: "Uso o ChatGPT Plus compartilhado e funciona perfeitamente. O acesso às imagens do DALL-E e o GPT-4o são essenciais para minhas pesquisas.",
+    rating: 5,
+    avatar: "FA"
+  },
+  {
+    name: "Juliana Mendes",
+    role: "Social Media",
+    content: "O suporte foi muito rápido quando tive uma dúvida sobre a ativação. O acesso chegou no meu WhatsApp segundos depois do pagamento.",
+    rating: 5,
+    avatar: "JM"
+  }
+];
+
 const products: Product[] = [
   {
     id: "chatgpt-shared",
     name: "ChatGPT Plus Compartilhado",
     price: "47,00",
+    paymentUrl: "https://pay.kirvano.com/7f0a76d5-cad6-48c1-9d03-be061e1f565a?aff=1402395b-e1d6-4f46-9ea2-b41b2f405fa8",
     period: "ANO",
     isPromo: false,
     features: [
@@ -57,6 +99,7 @@ const products: Product[] = [
     name: "ChatGPT Plus Privado",
     oldPrice: "149,99",
     price: "67,00",
+    paymentUrl: "https://pay.kirvano.com/a3665352-a5ea-4a59-b125-35906f5f7b00?aff=699ba46d-421a-4f5a-bebf-12a9911504ce",
     period: "ANO",
     isPromo: true,
     features: [
@@ -75,6 +118,7 @@ const products: Product[] = [
     id: "capcut-pro",
     name: "CapCut PRO",
     price: "47,00",
+    paymentUrl: "https://pay.kirvano.com/ce83c068-44db-45bf-b877-09dfd3430e7e?aff=6850ba6b-94b1-40dd-b349-cb6d3a10e9d1",
     period: "ANO",
     isPromo: false,
     features: [
@@ -95,6 +139,7 @@ const products: Product[] = [
     name: "GEMINI PRO + VEO3 FLOW",
     oldPrice: "199,99",
     price: "97,00",
+    paymentUrl: "https://pay.kirvano.com/b4b9e1db-6f05-431c-89a8-5d7e01b1a62e?aff=832c3ea5-742a-4543-a293-1a7bd3e19f0b",
     period: "ANO",
     isPromo: true,
     features: [
@@ -113,6 +158,7 @@ const products: Product[] = [
     id: "gemini-pro",
     name: "Gemini PRO",
     price: "67,00",
+    paymentUrl: "https://pay.kirvano.com/ffacc950-43b2-48fa-b13b-904b7e900a8a?aff=5e4958c8-3df8-47c0-8790-1bd7a08fa79f",
     period: "ANO",
     isPromo: false,
     features: [
@@ -132,6 +178,7 @@ const products: Product[] = [
     name: "Spotify Premium",
     oldPrice: "97,00",
     price: "67,00",
+    paymentUrl: "https://pay.kirvano.com/327932d4-46d1-4912-a007-042192f2edb2?aff=54906b88-e01b-428e-be3b-8a1c1157b731",
     period: "ANO",
     isPromo: true,
     features: [
@@ -150,7 +197,8 @@ const products: Product[] = [
     id: "super-grok",
     name: "Super Grok",
     oldPrice: "499,00",
-    price: "297,00",
+    price: "197,00",
+    paymentUrl: "https://pay.kirvano.com/3722bff7-be65-4794-b798-30356da309d6?aff=1519cd20-ed38-470a-b96e-5b68a4f3bab8",
     period: "ANO",
     isPromo: true,
     features: [
@@ -169,6 +217,7 @@ const products: Product[] = [
     id: "canva-pro",
     name: "Canva Pro",
     price: "47,00",
+    paymentUrl: "https://pay.kirvano.com/2fa6bd39-f9dc-4ebe-9dab-007c90602e6d?aff=0a9d4f6c-afaf-4769-983f-a2e8eb6c2ab6",
     period: "ANO",
     isPromo: false,
     features: [
@@ -430,7 +479,7 @@ export default function App() {
                     </div>
                   )}
                   <button 
-                    onClick={handleActivation}
+                    onClick={() => window.open(product.paymentUrl, "_blank")}
                     className="w-full bg-white text-black py-4 rounded-2xl font-bold text-sm tracking-wide group-hover:bg-brand-emerald group-hover:text-white transition-all transform group-active:scale-95 flex items-center justify-center gap-2"
                   >
                     GARANTIR ACESSO <ArrowRight className="w-4 h-4" />
@@ -489,6 +538,46 @@ export default function App() {
                 ESCOLHER MINHAS FERRAMENTAS
               </button>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Social Proof / Testimonials */}
+      <section className="py-24 bg-white/5 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
+          <div className="text-center mb-16">
+            <h2 className="font-display text-4xl md:text-5xl font-black mb-4 uppercase tracking-tighter">O que dizem nossos <span className="text-brand-emerald">alunos</span></h2>
+            <p className="opacity-50 text-lg">Mais de 5.000 pessoas já economizaram com nossos acessos.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {testimonials.map((t, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="glass p-8 rounded-[2rem] relative group"
+              >
+                <Quote className="absolute top-6 right-8 w-8 h-8 text-brand-emerald/10 group-hover:text-brand-emerald/20 transition-colors" />
+                <div className="flex gap-1 mb-4">
+                  {[...Array(t.rating)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                  ))}
+                </div>
+                <p className="text-sm opacity-80 leading-relaxed mb-6 italic">"{t.content}"</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-brand-emerald/20 flex items-center justify-center font-bold text-xs text-brand-emerald">
+                    {t.avatar}
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold">{t.name}</div>
+                    <div className="text-[10px] opacity-40 uppercase font-black tracking-widest">{t.role}</div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
