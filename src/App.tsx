@@ -644,11 +644,14 @@ export default function App() {
       {/* Footer */}
       <footer className="py-12 border-t border-white/5">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <div className="w-6 h-6 bg-brand-emerald rounded flex items-center justify-center">
               <Zap className="text-white w-4 h-4 fill-white" />
             </div>
-            <span className="font-display font-bold text-sm tracking-tighter uppercase">ACESSOS PREMIUM © 2026</span>
+            <div className="flex flex-col">
+              <span className="font-display font-bold text-sm tracking-tighter uppercase">ACESSOS PREMIUM © 2026</span>
+              <span className="text-[9px] opacity-20 font-black uppercase tracking-widest leading-none">Produtos InfinityApps</span>
+            </div>
           </div>
           <div className="flex gap-8 text-xs opacity-40 font-medium">
             <a href="#" className="hover:opacity-100 transition-opacity">Termos de Uso</a>
