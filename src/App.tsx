@@ -68,7 +68,7 @@ const testimonials: Testimonial[] = [
   {
     name: "Juliana Mendes",
     role: "Social Media",
-    content: "O suporte foi muito rápido quando tive uma dúvida sobre a ativação. O acesso chegou no meu WhatsApp segundos depois do pagamento.",
+    content: "O acesso chegou no meu e-mail segundos depois do pagamento. Foi tudo automático e sem complicações. Recomendo muito para quem quer economizar!",
     rating: 5,
     avatar: "JM"
   }
@@ -98,8 +98,8 @@ const products: Product[] = [
     id: "chatgpt-private",
     name: "ChatGPT Plus Privado",
     oldPrice: "149,99",
-    price: "67,00",
-    paymentUrl: "https://pay.kirvano.com/a3665352-a5ea-4a59-b125-35906f5f7b00?aff=699ba46d-421a-4f5a-bebf-12a9911504ce",
+    price: "97,00",
+    paymentUrl: "https://pay.kirvano.com/9faa90a1-866c-4677-ae73-1972916608da?aff=14a92b34-d409-4a1f-91d8-43362199496b",
     period: "ANO",
     isPromo: true,
     features: [
@@ -197,8 +197,8 @@ const products: Product[] = [
     id: "super-grok",
     name: "Super Grok",
     oldPrice: "499,00",
-    price: "197,00",
-    paymentUrl: "https://pay.kirvano.com/3722bff7-be65-4794-b798-30356da309d6?aff=1519cd20-ed38-470a-b96e-5b68a4f3bab8",
+    price: "297,00",
+    paymentUrl: "https://pay.kirvano.com/a6167e24-99da-4176-8c53-a96f694c5e55?aff=1519cd20-ed38-470a-b96e-5b68a4f3bab8",
     period: "ANO",
     isPromo: true,
     features: [
@@ -275,27 +275,26 @@ const faqs = [
 
 export default function App() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
+  const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 5, seconds: 0 });
+  const [isExpired, setIsExpired] = useState(false);
 
   useEffect(() => {
-    const calculateTimeLeft = () => {
-      const now = new Date();
-      const endOfDay = new Date();
-      endOfDay.setHours(23, 59, 59, 999);
-      
-      const difference = endOfDay.getTime() - now.getTime();
-      
-      if (difference <= 0) return { hours: 0, minutes: 0, seconds: 0 };
-
-      return {
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60)
-      };
-    };
+    // 5 minutes in seconds
+    let totalSeconds = 5 * 60;
 
     const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
+      if (totalSeconds <= 0) {
+        setIsExpired(true);
+        clearInterval(timer);
+      } else {
+        totalSeconds--;
+      }
+
+      setTimeLeft({
+        hours: 0,
+        minutes: Math.floor(totalSeconds / 60),
+        seconds: totalSeconds % 60
+      });
     }, 1000);
 
     return () => clearInterval(timer);
@@ -318,10 +317,8 @@ export default function App() {
             <Clock className="w-3.5 h-3.5" />
             AS OFERTAS DO DIA SE ENCERRAM EM:
           </div>
-          <div className="flex gap-2 font-mono text-sm">
-            <span className="bg-black text-white px-1.5 py-0.5 rounded">{timeLeft.hours.toString().padStart(2, "0")}h</span>
-            <span className="bg-black text-white px-1.5 py-0.5 rounded">{timeLeft.minutes.toString().padStart(2, "0")}m</span>
-            <span className="bg-black text-white px-1.5 py-0.5 rounded animate-pulse">{timeLeft.seconds.toString().padStart(2, "0")}s</span>
+          <div className="bg-black text-white px-2 py-0.5 rounded font-mono text-sm tracking-widest">
+            {timeLeft.minutes.toString().padStart(2, "0")}:{timeLeft.seconds.toString().padStart(2, "0")}
           </div>
         </div>
       </div>
@@ -365,24 +362,25 @@ export default function App() {
             <span className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-bold uppercase tracking-widest text-brand-emerald mb-6 inline-block">
                Acesso Premium Desbloqueado
             </span>
-            <h1 className="font-display text-3xl sm:text-4xl md:text-7xl font-black leading-[0.95] tracking-tighter mb-8 max-w-4xl mx-auto uppercase px-2">
-              Chega de pagar caro todo mês em <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">assinatura de aplicativos</span>
+            <h1 className="font-display font-black leading-none tracking-tighter mb-8 max-w-6xl mx-auto uppercase px-4 flex flex-col gap-1 items-center">
+              <span className="block text-[3.5vw] sm:text-2xl md:text-4xl lg:text-5xl text-white whitespace-nowrap">CHEGA DE PAGAR CARO EM</span>
+              <span className="block text-[7.5vw] sm:text-4xl md:text-7xl lg:text-8xl text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 py-2 whitespace-nowrap">ASSINATURAS MENSAIS</span>
+              <span className="block text-[4.5vw] sm:text-3xl md:text-6xl lg:text-7xl text-white whitespace-nowrap">DE APPS E STREAMINGS!</span>
             </h1>
-            <p className="text-base md:text-xl opacity-80 max-w-2xl mx-auto mb-12 leading-relaxed font-medium px-4">
-              Pague somente <span className="text-brand-emerald font-bold underline decoration-brand-emerald/30">1x por ano</span> e economize até 90%. Tenha acesso às melhores ferramentas do mundo sem mensalidades pesadas.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="mb-12">
+              <p className="text-base md:text-xl opacity-80 max-w-2xl mx-auto mb-4 leading-relaxed font-medium px-4">
+                Pague somente 1x e tenha acesso durante 12 MESES!
+              </p>
+              <p className="text-brand-emerald font-black text-xl md:text-2xl uppercase tracking-tighter">
+                ENTRE EM CONTATO E GARANTA ATÉ 90% DE ECONOMIA
+              </p>
+            </div>
+            <div className="flex justify-center items-center">
               <button 
                 onClick={() => document.getElementById('produtos')?.scrollIntoView({ behavior: 'smooth' })}
-                className="bg-brand-emerald text-white px-10 py-5 rounded-full font-black text-xl hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20 active:scale-95"
+                className="bg-red-600 text-white px-12 py-6 rounded-full font-black text-2xl hover:bg-red-700 transition-all shadow-xl shadow-red-500/20 active:scale-95 uppercase tracking-tighter"
               >
-                APROVEITAR OFERTA AGORA
-              </button>
-              <button 
-                onClick={handleActivation}
-                className="bg-white/5 border border-white/10 text-white px-10 py-5 rounded-full font-bold text-lg hover:bg-white/10 transition-all active:scale-95"
-              >
-                Já comprei, quero Ativar
+                EU QUERO!
               </button>
             </div>
             <div className="mt-12 flex flex-wrap justify-center items-center gap-8 opacity-40 grayscale">
@@ -392,21 +390,6 @@ export default function App() {
               <img src="https://www.vectorlogo.zone/logos/google/google-ar21.svg" alt="Google" className="h-6" />
             </div>
           </motion.div>
-        </div>
-      </section>
-
-      {/* Activation Banner */}
-      <section className="bg-brand-emerald py-6">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-black font-black text-xl md:text-2xl tracking-tighter text-center md:text-left uppercase">
-            FEZ A COMPRA? <span className="opacity-70">ATIVE SEU ACESSO AQUI:</span>
-          </p>
-          <button 
-            onClick={handleActivation}
-            className="bg-black text-white px-8 py-4 rounded-full font-bold hover:bg-zinc-800 transition-all flex items-center gap-2 whitespace-nowrap active:scale-95"
-          >
-            Portal de Ativação <ArrowRight className="w-5 h-5" />
-          </button>
         </div>
       </section>
 
@@ -425,68 +408,89 @@ export default function App() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-            {products.map((product, idx) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-                className="group relative glass rounded-[2.5rem] p-8 flex flex-col hover-glow transition-all duration-500 overflow-hidden"
-              >
-                {product.isPromo && (
-                  <div className="absolute top-6 right-6 bg-red-600 text-white text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-tighter shadow-lg shadow-red-500/20">
-                    OFERTA DO DIA
-                  </div>
-                )}
-                
-                <div className={`w-14 h-14 rounded-2xl mb-8 flex items-center justify-center transition-transform group-hover:scale-110 group-hover:rotate-3 duration-500 ${product.colorClass}`}>
-                  {product.logoUrl ? (
-                    <img 
-                      src={product.logoUrl} 
-                      alt={product.name} 
-                      className="w-8 h-8 object-contain"
-                      referrerPolicy="no-referrer"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                        (e.target as HTMLImageElement).parentElement!.classList.add('icon-visible');
-                      }}
-                    />
-                  ) : (
-                    <product.icon className={`w-8 h-8 ${product.iconColorClass}`} />
-                  )}
-                </div>
+            {products.map((product, idx) => {
+              // Dynamic pricing for ChatGPT Plus Privado
+              let displayPrice = product.price;
+              let displayUrl = product.paymentUrl;
 
-                <h3 className="font-display text-xl font-bold mb-4 leading-tight uppercase tracking-tight">{product.name}</h3>
-                
-                <ul className="space-y-3 mb-8 flex-grow">
-                  {product.features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3 text-xs opacity-70 font-medium leading-snug">
-                      <Check className="w-4 h-4 text-brand-emerald shrink-0 mt-0.5" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+              if (product.id === "chatgpt-private") {
+                displayPrice = isExpired ? "97,00" : "67,00";
+                displayUrl = isExpired 
+                  ? "https://pay.kirvano.com/9faa90a1-866c-4677-ae73-1972916608da?aff=14a92b34-d409-4a1f-91d8-43362199496b"
+                  : "https://pay.kirvano.com/a3665352-a5ea-4a59-b125-35906f5f7b00?aff=699ba46d-421a-4f5a-bebf-12a9911504ce";
+              }
 
-                <div className="mt-auto pt-8 border-t border-white/5">
-                  <div className="flex items-baseline gap-2 mb-6">
-                    <span className="text-4xl font-display font-black tracking-tighter">R$ {product.price}</span>
-                    <span className="text-xs opacity-40">/{product.period}</span>
-                  </div>
-                  {product.oldPrice && (
-                    <div className="flex items-center gap-2 mb-4 text-xs opacity-30 line-through">
-                      De R$ {product.oldPrice}
+              // Dynamic pricing for Super Grok
+              if (product.id === "super-grok") {
+                displayPrice = isExpired ? "297,00" : "197,00";
+                displayUrl = isExpired 
+                  ? "https://pay.kirvano.com/a6167e24-99da-4176-8c53-a96f694c5e55?aff=1519cd20-ed38-470a-b96e-5b68a4f3bab8"
+                  : "https://pay.kirvano.com/3722bff7-be65-4794-b798-30356da309d6?aff=1519cd20-ed38-470a-b96e-5b68a4f3bab8";
+              }
+
+              return (
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="group relative glass rounded-[2.5rem] p-8 flex flex-col hover-glow transition-all duration-500 overflow-hidden"
+                >
+                  {product.isPromo && (
+                    <div className="absolute top-6 right-6 bg-red-600 text-white text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-tighter shadow-lg shadow-red-500/20">
+                      OFERTA DO DIA
                     </div>
                   )}
-                  <button 
-                    onClick={() => window.open(product.paymentUrl, "_blank")}
-                    className="w-full bg-white text-black py-4 rounded-2xl font-bold text-sm tracking-wide group-hover:bg-brand-emerald group-hover:text-white transition-all transform group-active:scale-95 flex items-center justify-center gap-2"
-                  >
-                    GARANTIR ACESSO <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </motion.div>
-            ))}
+                  
+                  <div className={`w-14 h-14 rounded-2xl mb-8 flex items-center justify-center transition-transform group-hover:scale-110 group-hover:rotate-3 duration-500 ${product.colorClass}`}>
+                    {product.logoUrl ? (
+                      <img 
+                        src={product.logoUrl} 
+                        alt={product.name} 
+                        className="w-8 h-8 object-contain"
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                          (e.target as HTMLImageElement).parentElement!.classList.add('icon-visible');
+                        }}
+                      />
+                    ) : (
+                      <product.icon className={`w-8 h-8 ${product.iconColorClass}`} />
+                    )}
+                  </div>
+
+                  <h3 className="font-display text-xl font-bold mb-4 leading-tight uppercase tracking-tight">{product.name}</h3>
+                  
+                  <ul className="space-y-3 mb-8 flex-grow">
+                    {product.features.map((feature, i) => (
+                      <li key={i} className="flex items-start gap-3 text-xs opacity-70 font-medium leading-snug">
+                        <Check className="w-4 h-4 text-brand-emerald shrink-0 mt-0.5" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="mt-auto pt-8 border-t border-white/5">
+                    <div className="flex items-baseline gap-2 mb-6">
+                      <span className="text-4xl font-display font-black tracking-tighter">R$ {displayPrice}</span>
+                      <span className="text-xs opacity-40">/{product.period}</span>
+                    </div>
+                    {product.oldPrice && (
+                      <div className="flex items-center gap-2 mb-4 text-xs opacity-30 line-through">
+                        De R$ {product.oldPrice}
+                      </div>
+                    )}
+                    <button 
+                      onClick={() => window.open(displayUrl, "_blank")}
+                      className="w-full bg-white text-black py-4 rounded-2xl font-bold text-sm tracking-wide group-hover:bg-brand-emerald group-hover:text-white transition-all transform group-active:scale-95 flex items-center justify-center gap-2"
+                    >
+                      EU QUERO! <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
 
           <div className="mt-16 text-center">
@@ -546,8 +550,8 @@ export default function App() {
       <section className="py-24 bg-white/5 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
-            <h2 className="font-display text-4xl md:text-5xl font-black mb-4 uppercase tracking-tighter">O que dizem nossos <span className="text-brand-emerald">alunos</span></h2>
-            <p className="opacity-50 text-lg">Mais de 5.000 pessoas já economizaram com nossos acessos.</p>
+            <h2 className="font-display text-4xl md:text-5xl font-black mb-4 uppercase tracking-tighter">O que dizem nossos <span className="text-brand-emerald">clientes</span></h2>
+            <p className="opacity-50 text-lg">Mais de 5.000 clientes ativos já economizaram com nossos acessos.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -634,9 +638,9 @@ export default function App() {
           </p>
           <button 
             onClick={() => document.getElementById('produtos')?.scrollIntoView({ behavior: 'smooth' })}
-            className="bg-brand-emerald text-white px-12 py-5 rounded-full font-black text-xl hover:bg-emerald-600 transition-all shadow-xl shadow-brand-emerald/20 active:scale-95"
+            className="bg-red-600 text-white px-12 py-5 rounded-full font-black text-xl hover:bg-red-700 transition-all shadow-xl shadow-red-500/20 active:scale-95 uppercase tracking-tighter"
           >
-            GARANTIR MINHA VAGA COM DESCONTO
+            EU QUERO!
           </button>
         </div>
       </section>
@@ -664,7 +668,7 @@ export default function App() {
               <div className="w-8 h-8 rounded-full border-2 border-black bg-brand-purple flex items-center justify-center text-[10px] font-bold">JD</div>
               <div className="w-8 h-8 rounded-full border-2 border-black bg-brand-blue flex items-center justify-center text-[10px] font-bold">+5k</div>
             </div>
-            <span className="text-[10px] font-bold opacity-40 uppercase tracking-widest">Alunos Ativos</span>
+            <span className="text-[10px] font-bold opacity-40 uppercase tracking-widest">Clientes Ativos</span>
           </div>
         </div>
       </footer>
